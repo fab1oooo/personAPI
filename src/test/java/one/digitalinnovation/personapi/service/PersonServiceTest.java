@@ -23,30 +23,26 @@ public class PersonServiceTest {
     @Mock
     private PersonRepository personRepository;
 
-    @Mock
-    private PersonMapper personMapper;
-
     @InjectMocks
     private PersonService personService;
 
     @Test
-    void testGivenPersonDTOThenReturnSuccessSavedMessage() {
+    void testGivenPersonDTOThenReturnSavedMessage() {
         PersonDTO personDTO = createFakeDTO();
         Person expectedSavedPerson = createFakeEntity();
 
-        when(personMapper.toModel(personDTO)).thenReturn(expectedSavedPerson);
         when(personRepository.save(any(Person.class))).thenReturn(expectedSavedPerson);
 
-        MessageResponseDTO expectedSuccessMessage = createExpectedSuccessMessage(expectedSavedPerson.getId());
-        MessageResponseDTO successMessage = personService.create(personDTO);
+        MessageResponseDTO expectedSuccessMessage = createExpectedMessageResponse(expectedSavedPerson.getId());
+        MessageResponseDTO succesMessage = personService.createPerson(personDTO);
 
-        assertEquals(expectedSuccessMessage, successMessage);
+        assertEquals(expectedSuccessMessage, succesMessage);
     }
 
-    private MessageResponseDTO createExpectedSuccessMessage(Long savedPersonId) {
-        return MessageResponseDTO.builder()
-                .message("Person successfully created with ID " + savedPersonId)
+    private MessageResponseDTO createExpectedMessageResponse(Long id) {
+        return MessageResponseDTO
+                .builder()
+                .message("Created person with ID " + id)
                 .build();
     }
-
 }
